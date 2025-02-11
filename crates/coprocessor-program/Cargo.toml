@@ -1,0 +1,13 @@
+[package]
+name = "coprocessor-program"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+json = "0.12"
+hyper = { version = "0.14", features = ["http1", "runtime", "client"] }
+tokio = { version = "1.32", features = ["macros", "rt-multi-thread"] }
+tower-service = "0.3.3"
+tower-cartesi = { git = "https://github.com/willemolding/CarteZcash", rev = "018262c10e2775b4ba8e8dbede078e22bd19de95" }
+tracing = "0.1.41"
+futures-util = "0.3.31"
