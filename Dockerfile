@@ -41,7 +41,7 @@ RUN rustup target add riscv64gc-unknown-linux-gnu
 
 WORKDIR /opt/cartesi/coprocessor-program
 COPY . .
-RUN cargo build --release --bin coprocessor-program
+RUN cargo build --release -p coprocessor-program
 
 FROM --platform=linux/riscv64 ubuntu:22.04
 
