@@ -2,6 +2,7 @@
 pragma solidity ^0.8.28;
 
 /// @title LIP-23 beacon chain oracle interface
+/// https://github.com/lidofinance/lido-improvement-proposals/blob/develop/LIPS/lip-23.md
 interface ISecondOpinionOracle {
     function getReport(uint256 refSlot)
         external

@@ -3,3 +3,6 @@ target
 .env
 .envrc
 beacon-cache
+deployment_history
+out
+cache

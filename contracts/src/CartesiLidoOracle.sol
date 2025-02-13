@@ -28,10 +28,20 @@ contract CartesiLidoOracle is CoprocessorAdapter, ISecondOpinionOracle {
     {}
 
     /// @notice Generates a report for a given slot. This slot must be within the last 32768 blocks or this will fail
-    function generateReport(uint256 slot) external {
+    function generateReport(uint256 slot, bytes32 preimageRoot) external {
         // this will revert if unable to get the block root for this slot
         bytes32 blockRoot = BeaconBlockRoots.findBlockRoot(genesis_block_timestamp, slot);
-        bytes memory input = abi.encode(blockRoot);
+        bytes memory input = abi.encode(blockRoot, preimageRoot);
+        bytes32 payloadHash = keccak256(input);
+        inflightRequests[payloadHash] = slot;
+        callCoprocessor(input);
+    }
+
+    /// @notice Testnet version of function to generate a report
+    ///  !!! This does not use trusted block roots from the chain so the reports also cannot be trusted
+    ///  !!! To be used only for testing purposes
+    function generateReportUntrusted(uint256 slot, bytes32 beaconBlockRoot, bytes32 preimageRoot) external {
+        bytes memory input = abi.encode(beaconBlockRoot, preimageRoot);
         bytes32 payloadHash = keccak256(input);
         inflightRequests[payloadHash] = slot;
         callCoprocessor(input);

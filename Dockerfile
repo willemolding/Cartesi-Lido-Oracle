@@ -4,7 +4,10 @@ FROM ubuntu:22.04 AS builder
 ENV RUSTUP_HOME=/usr/local/rustup \
     CARGO_HOME=/usr/local/cargo \
     PATH=/usr/local/cargo/bin:$PATH \
-    RUST_VERSION=1.81.0
+    RUST_VERSION=1.81.0 \
+    CARGO_BUILD_TARGET="riscv64gc-unknown-linux-gnu" \
+    RUSTFLAGS="-C target-feature=+crt-static" \
+    CARGO_TARGET_RISCV64GC_UNKNOWN_LINUX_GNU_LINKER="riscv64-linux-gnu-g++"
 
 ARG DEBIAN_FRONTEND=noninteractive
 RUN <<EOF
