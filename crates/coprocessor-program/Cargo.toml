@@ -4,7 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-alloy = { version = "0.11.0", features = ["sol-types"]}
+alloy-sol-types = { version = "0.8.21" }
+alloy-primitives = { version = "0.8.21" }
 json = "0.12"
 hyper = { version = "0.14", features = ["http1", "runtime", "client"] }
 tokio = { version = "1.32", features = ["macros", "rt-multi-thread"] }
@@ -14,7 +15,7 @@ tracing = "0.1.41"
 futures-util = "0.3.31"
 ethereum-consensus = { git = "https://github.com/ralexstokes/ethereum-consensus.git", rev = "8fbd8a53dca0170bedeca40a92ee70fd48c4615b", default-features = false, features = ["serde"] }
 ssz_rs = { git = "https://github.com/ralexstokes/ssz-rs", rev = "84ef2b71aa004f6767420badb42c902ad56b8b72" }
-reqwest = "0.12.12"
+reqwest = { version = "0.12.12", default-features = false, features = ["json"] }
 anyhow = "1.0.95"
 io.workspace = true
 serde = "1.0.217"

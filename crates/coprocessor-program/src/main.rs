@@ -6,8 +6,8 @@ use std::future::Future;
 use std::pin::Pin;
 use std::task::{Context, Poll};
 
-use alloy::primitives::B256;
-use alloy::sol_types::SolValue;
+use alloy_primitives::B256;
+use alloy_sol_types::SolValue;
 use anyhow::Result;
 use ethereum_consensus::{phase0::SignedBeaconBlockHeader, types::mainnet::BeaconState};
 use futures_util::FutureExt;
@@ -50,13 +50,16 @@ impl Service<Request> for LidoOracleApp {
     fn call(&mut self, req: Request) -> Self::Future {
         match req {
             Request::AdvanceState { metadata, payload } => {
-                println!(
+                tracing::info!(
                     "Received advance state request {:?} \npayload {:?}:",
-                    metadata, payload
+                    metadata,
+                    payload
                 );
 
                 async {
                     let report = run_oracle(payload).await?;
+
+                    tracing::info!("Derived report: {:?}", report);
 
                     let mut response = Response::empty_accept();
                     response.add_notice(&report.abi_encode());

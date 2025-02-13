@@ -1,5 +1,7 @@
 [workspace]
+resolver = "2"
 
-members = [
-    "crates/coprocessor-program"
-, "crates/io"]
+members = ["crates/coprocessor-program", "crates/io"]
+
+[workspace.dependencies]
+io = { path = "./crates/io" }

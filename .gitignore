@@ -1,2 +1,5 @@
 .cartesi
 target
+.env
+.envrc
+beacon-cache

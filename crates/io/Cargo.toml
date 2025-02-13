@@ -4,4 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+alloy-sol-types = { version = "0.8.21" }
+anyhow = "1.0.95"
 serde = "1.0.217"
+serde_cbor = "0.11.2"
