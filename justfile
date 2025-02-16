@@ -19,7 +19,7 @@ deploy-devnet:
     cartesi-coprocessor deploy --contract-name CartesiLidoOracle --network devnet --constructor-args $DEVNET_TASK_ISSUER $MACHINE_HASH
 
 trigger-oracle slot:
-    RUST_LOG=debug cargo run --bin orchestrator -- --slot {{slot}}
+    RUST_LOG=orchestrator=debug cargo run --bin orchestrator -- --slot {{slot}}
 
 ## Manually running
 
@@ -32,7 +32,7 @@ carize:
 upload-to-solver:
     #!/usr/bin/env bash    
 
-    curl -X POST -F "file=@output.car" "$IPFS_URL/api/v0/dag/import"
+    curl -X POST -F "file=@output.car" "http://localhost:5001/api/v0/dag/import"
 
     CID=$(cat output.cid)
     SIZE=$(cat output.size)

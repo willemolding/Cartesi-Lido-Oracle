@@ -33,6 +33,12 @@ type BoxError = Box<dyn Error + Send + Sync>;
 
 #[tokio::main]
 async fn main() -> Result<(), BoxError> {
+    let subscriber = tracing_subscriber::fmt()
+        .with_max_level(tracing::Level::DEBUG)
+        .compact()
+        .finish();
+    tracing::subscriber::set_global_default(subscriber)?;
+
     let server_addr = env::var("ROLLUP_HTTP_SERVER_URL")?;
 
     let mut app = LidoOracleApp;

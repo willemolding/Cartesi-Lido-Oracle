@@ -40,4 +40,8 @@ just trigger-oracle 100
 
 ## Challenges Faced
 
+What I struggled most with was the missing documentation or examples for machine IO and the integration of that with the coprocessor operator Figuring out how to do this properly probably took longer than the rest of the project combined.
 
+Another main challenge was a slow dev loop. I had even less luck using machine IO with Nonodox (it may be possible but something else undocumented) and so I was testing everything against the devnet. This was made worse by the fact that the operator didn't seem to recover properly from some errors requiring the devnet to be restarted which was a slow process.
+
+I anticipate that that most projects that want to use a coprocessor to do large computations will also require large inputs and so supporting preimage IO and tooling around it should be a high priority.

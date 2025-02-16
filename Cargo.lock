@@ -1298,6 +1298,7 @@ dependencies = [
  "tower-cartesi-coprocessor",
  "tower-service",
  "tracing",
+ "tracing-subscriber",
 ]
 
 [[package]]

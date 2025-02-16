@@ -21,17 +21,19 @@ pub async fn get_preimage(hash: [u8; 32]) -> Result<Vec<u8>> {
     let server_addr = env::var("ROLLUP_HTTP_SERVER_URL")?;
     let client = reqwest::Client::new();
 
-    let request = GIORequest {
-        domain: 0x2c,
-        id: hex::encode(hash),
-    };
+    // prefix with the keccak hash type (0x02)
+    let id = format!("0x02{}", hex::encode(hash));
 
+    let request = GIORequest { domain: 0x2a, id };
+    tracing::debug!("Sending request: {:?}", request);
     let res = client
-        .get(format!("{}/gio", server_addr))
+        .post(format!("{}/gio", server_addr))
         .json(&request)
         .send()
         .await?;
 
+    tracing::debug!("Got response: {:?}", res);
+
     let response: GIOResponse = res.json().await?;
-    Ok(hex::decode(response.response)?)
+    Ok(hex::decode(response.response.trim_start_matches("0x"))?)
 }

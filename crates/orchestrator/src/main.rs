@@ -210,9 +210,11 @@ async fn upload_to_operator(base_url: Url, inputs: &Inputs) -> Result<()> {
             .send()
             .await?;
 
-        if res.status() != 200 {
-            let err = res.text().await?;
-            tracing::debug!("Preimage check response: {:?}", err);
+        let status = res.status();
+        let text = res.text().await?;
+        tracing::debug!("Preimage check response: {:?}", &text);
+
+        if status != 200 {
             return Err(anyhow::anyhow!("Check showed preimages not uploaded"));
         }
     }
