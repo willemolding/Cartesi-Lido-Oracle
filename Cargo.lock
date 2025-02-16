@@ -2429,8 +2429,10 @@ dependencies = [
 name = "io"
 version = "0.1.0"
 dependencies = [
+ "alloy-primitives 0.8.21",
  "alloy-sol-types",
  "anyhow",
+ "ethereum-consensus",
  "serde",
  "serde_cbor",
 ]

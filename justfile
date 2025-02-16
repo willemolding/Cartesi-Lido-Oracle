@@ -18,8 +18,17 @@ deploy-devnet:
 
     cartesi-coprocessor deploy --contract-name CartesiLidoOracle --network devnet --constructor-args $DEVNET_TASK_ISSUER $MACHINE_HASH
 
+deploy-holesky:
+    #!/usr/bin/env bash
+    output=$(cartesi-coprocessor address-book)
+
+    MACHINE_HASH=$(echo "$output" | grep "Machine Hash" | awk '{print $3}')
+    DEVNET_TASK_ISSUER=$(echo "$output" | grep "Devnet_task_issuer" | awk '{print $2}')
+
+    cartesi-coprocessor deploy -p $ETH_PRIVATE_KEY -r $ETH_RPC_URL --contract-name CartesiLidoOracle --network testnet --constructor-args $DEVNET_TASK_ISSUER $MACHINE_HASH
+
 trigger-oracle slot:
-    RUST_LOG=orchestrator=debug cargo run --bin orchestrator -- --slot {{slot}}
+    RUST_LOG=orchestrator=debug cargo run --release --bin orchestrator -- --slot {{slot}}
 
 ## Manually running
 
@@ -57,6 +66,9 @@ deploy-contracts:
     forge create --broadcast \
       --rpc-url $ETH_RPC_URL \
       --private-key $ETH_PRIVATE_KEY \
+      --verify \
+      --etherscan-api-key $ETHERSCAN_API_KEY \
+      --verifier-url $ETHERSCAN_API_URL \
       ./src/CartesiLidoOracle.sol:CartesiLidoOracle \
       --constructor-args $DEVNET_TASK_ISSUER $MACHINE_HASH
 

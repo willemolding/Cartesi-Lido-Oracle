@@ -14,6 +14,8 @@ contract CartesiLidoOracle is CoprocessorAdapter, ISecondOpinionOracle {
         uint256 totalExitedValidators;
     }
 
+    event ReportGenerated(uint256 slot, Report report);
+
     /// Genesis timestamp of the chain, required for retrieving the beacon block roots
     uint256 public immutable genesis_block_timestamp;
 
@@ -57,6 +59,7 @@ contract CartesiLidoOracle is CoprocessorAdapter, ISecondOpinionOracle {
 
         Report memory report = abi.decode(notice, (Report));
         reports[slot] = report;
+        emit ReportGenerated(slot, report);
     }
 
     function getReport(uint256 slot)
