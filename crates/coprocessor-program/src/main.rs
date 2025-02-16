@@ -6,28 +6,15 @@ use std::future::Future;
 use std::pin::Pin;
 use std::task::{Context, Poll};
 
-use alloy_primitives::B256;
 use alloy_sol_types::SolValue;
 use anyhow::Result;
 use ethereum_consensus::{phase0::SignedBeaconBlockHeader, types::mainnet::BeaconState};
 use futures_util::FutureExt;
 use gio::get_preimage;
-use io::{Input, Manifest, Report};
+use io::{derive_report, Input, Manifest, Report};
 use ssz_rs::prelude::*;
 use tower_cartesi_coprocessor::{listen_http, Request, Response};
 use tower_service::Service;
-
-// mainnet
-// pub const WITHDRAWAL_CREDENTIALS: B256 = B256::new([
-//     0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xb9, 0xd7, 0x93, 0x48,
-//     0x78, 0xb5, 0xfb, 0x96, 0x10, 0xb3, 0xfe, 0x8a, 0x5e, 0x44, 0x1e, 0x8f, 0xad, 0x7e, 0x29, 0x3f,
-// ]);
-
-// Holesky
-pub const WITHDRAWAL_CREDENTIALS: B256 = B256::new([
-    0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xF0, 0x17, 0x9d, 0xEC,
-    0x45, 0xa3, 0x74, 0x23, 0xEA, 0xD4, 0xFa, 0xD5, 0xfC, 0xb1, 0x36, 0x19, 0x78, 0x72, 0xEA, 0xd9,
-]);
 
 type BoxError = Box<dyn Error + Send + Sync>;
 
@@ -109,37 +96,18 @@ async fn run_oracle(input: Vec<u8>) -> Result<Report> {
     tracing::debug!("Successfully loaded beacon state");
 
     // calculate the block root and ensure it matches the input
+    tracing::debug!("Calculating block root and checking against input");
     let block_root = block.hash_tree_root()?;
     assert_eq!(block_root, *input.block_root);
 
     // calculate the state root and ensure it is in the block
+    tracing::debug!("Calculating state root and checking state root in block");
     let state_root = state.hash_tree_root()?;
     assert_eq!(state_root, block.message.state_root);
 
     // now we can trust the data in the state and use it to make a report
-    let report = derive_report(state);
+    tracing::debug!("Generating report...");
+    let report = derive_report(&state);
 
     Ok(report)
-}
-
-fn derive_report(state: BeaconState) -> Report {
-    // total balance of all Lido validators
-    let (cl_balance_gewi, total_deposited) = state
-        .validators()
-        .iter()
-        .zip(state.balances().iter())
-        .filter(|(v, _)| v.withdrawal_credentials.as_slice() == WITHDRAWAL_CREDENTIALS.as_slice())
-        .fold(
-            (0u64, 0u64),
-            |(cl_balance_gwei, total_deposited), (_, bal)| {
-                (cl_balance_gwei + bal, total_deposited + 1)
-            },
-        );
-
-    Report {
-        clBalanceGwei: U256::from(cl_balance_gewi),
-        withdrawalVaultBalanceWei: U256::ZERO,
-        totalDepositedValidators: U256::from(total_deposited),
-        totalExitedValidators: U256::ZERO,
-    }
 }

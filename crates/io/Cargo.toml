@@ -5,6 +5,8 @@ edition = "2021"
 
 [dependencies]
 alloy-sol-types = { version = "0.8.21" }
+alloy-primitives = { version = "0.8.21" }
 anyhow = "1.0.95"
 serde = "1.0.217"
 serde_cbor = "0.11.2"
+ethereum-consensus = { git = "https://github.com/ralexstokes/ethereum-consensus.git", rev = "8fbd8a53dca0170bedeca40a92ee70fd48c4615b", default-features = false, features = ["serde"] }

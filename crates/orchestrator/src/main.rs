@@ -19,6 +19,7 @@ use anyhow::Result;
 use beacon_client::BeaconClient;
 use clap::Parser;
 use ethereum_consensus::{phase0::SignedBeaconBlockHeader, types::mainnet::BeaconState};
+use io::derive_report;
 use sha3::{Digest, Keccak256};
 use ssz_rs::prelude::*;
 use tracing_subscriber::{fmt, prelude::*, EnvFilter};
@@ -77,12 +78,16 @@ async fn main() -> Result<()> {
         ..
     } = Args::parse();
 
-    tracing::info!("Fetching beacon block and state for slot {}", slot);
     let beacon_client = BeaconClient::new_with_cache(beacon_rpc_url, "./beacon-cache")?;
+    tracing::info!("Fetching beacon block for slot {}", slot);
     let block_header = beacon_client.get_block_header(slot).await?;
+    tracing::info!("Fetching beacon state for slot {}", slot);
     let beacon_state = beacon_client.get_beacon_state(slot).await?;
 
     let block_root = block_header.hash_tree_root()?.to_vec();
+
+    let report = derive_report(&beacon_state);
+    tracing::info!("Report for this slot: {:?}", report);
 
     tracing::info!("building inputs...");
     let inputs = build_inputs::<CHUNK_SIZE>(block_header, beacon_state);
