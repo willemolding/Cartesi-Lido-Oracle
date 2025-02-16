@@ -7,13 +7,11 @@ A coprocessor that enhances the Lido protocol by replacing trusted parties with 
 
 ## About
 
-To correctly rebase stETH Lido needs to know the total staked ETH held by all Lido validators. This information lives in the beacon state which inaccessible to smart contracts. Even if it was the gas required to iterate over all the >1M validators makes it infeasible.
+To correctly rebase stETH Lido needs to know the total staked ETH held by all Lido validators, among some other things. This information lives in the beacon state which inaccessible to smart contracts. Even if it was the gas required to iterate over all the >1M validators makes it infeasible.
 
-Lido currently gets around this by having trusted offchain actors compute this value and pass it to the protocol via a 5-of-9 multisig. But they want to do better! There is currently an open proposal (LIP-23) for submissions to build trustless backstops for these oracles. So far there have been a number attempts to solve this using ZK with mixed success. Of 5 proposals awarded grants to build ZK oracles only 2 have succeeded. The main challenge being the size of the validator set.
+Lido currently gets around this by having trusted offchain actors compute these values and pass them to the protocol via a 5-of-9 multisig. But they want to do better! There is currently an open proposal (LIP-23) for submissions to build trustless backstops for these oracles. So far there have been a number attempts to solve this using ZK with mixed success. Of 5 proposals awarded grants to build ZK oracles only 2 have succeeded. The main challenge being the size of the validator set.
 
 This project gives an alternative solution using Cartesi Coprocessors and Eigenlayer. It solves a real and current problem faced by the largest DeFi protocol in the world. After this hackathon I hope it will be considered as a candidate for a further Lido grant.
-
-
 
 ## How it works
 
@@ -24,9 +22,9 @@ The beacon block and beacon state are loaded into the coprocessor via the Cartes
 ```
 OracleReport {
     clBalanceGwei, // the total balance held by all Lido validators
-	withdrawalVaultBalanceWei, // balance held in the withdrawal vault
-	totalDepositedValidators, // total number of Lido validaotrs
-	totalExitedValidators, // number of Lido validators that have exited
+    withdrawalVaultBalanceWei, // balance held in the withdrawal vault
+    totalDepositedValidators, // total number of Lido validaotrs
+    totalExitedValidators, // number of Lido validators that have exited
 }
 ```
 
