@@ -1,3 +1,6 @@
+
+![Cartesi Lido Oracle](./resources/banner.png)
+
 # Cartesi Lido Oracle
 
 A coprocessor that enhances the Lido protocol by replacing trusted parties with provable computation. Built for Cartesi+Eigenlayer Experiment Week 2025.
