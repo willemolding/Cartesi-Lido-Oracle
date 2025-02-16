@@ -1,5 +1,5 @@
 [package]
-name = "coprocessor-program"
+name = "dapp"
 version = "0.1.0"
 edition = "2021"
 
@@ -10,7 +10,7 @@ json = "0.12"
 hyper = { version = "0.14", features = ["http1", "runtime", "client"] }
 tokio = { version = "1.32", features = ["macros", "rt-multi-thread"] }
 tower-service = "0.3.3"
-tower-cartesi = { git = "https://github.com/willemolding/CarteZcash", rev = "018262c10e2775b4ba8e8dbede078e22bd19de95" }
+tower-cartesi-coprocessor = { workspace = true }
 tracing = "0.1.41"
 futures-util = "0.3.31"
 ethereum-consensus = { git = "https://github.com/ralexstokes/ethereum-consensus.git", rev = "8fbd8a53dca0170bedeca40a92ee70fd48c4615b", default-features = false, features = ["serde"] }

@@ -42,14 +42,14 @@ RUN set -eux; \
 
 RUN rustup target add riscv64gc-unknown-linux-gnu
 
-WORKDIR /opt/cartesi/coprocessor-program
+WORKDIR /opt/cartesi/dapp
 COPY . .
-RUN cargo build --release -p coprocessor-program
+RUN cargo build --release -p dapp
 
 FROM --platform=linux/riscv64 ubuntu:22.04
 
 LABEL io.cartesi.rollups.sdk_version=0.11.1
-LABEL io.cartesi.rollups.ram_size=128Mi
+LABEL io.cartesi.rollups.ram_size=512Mi
 
 ARG DEBIAN_FRONTEND=noninteractive
 RUN <<EOF
@@ -58,7 +58,7 @@ apt-get update
 apt-get install -y --no-install-recommends \
     busybox-static=1:1.30.1-7ubuntu3
 rm -rf /var/lib/apt/lists/* /var/log/* /var/cache/*
-useradd --create-home --user-group coprocessor-program
+useradd --create-home --user-group dapp
 EOF
 
 ARG MACHINE_EMULATOR_TOOLS_VERSION=0.16.1
@@ -66,12 +66,12 @@ ADD https://github.com/cartesi/machine-emulator-tools/releases/download/v${MACHI
 RUN dpkg -i /machine-emulator-tools-v${MACHINE_EMULATOR_TOOLS_VERSION}.deb \
   && rm /machine-emulator-tools-v${MACHINE_EMULATOR_TOOLS_VERSION}.deb
 
-ENV PATH="/opt/cartesi/bin:/opt/cartesi/coprocessor-program:${PATH}"
+ENV PATH="/opt/cartesi/bin:/opt/cartesi/dapp:${PATH}"
 
-WORKDIR /opt/cartesi/coprocessor-program
-COPY --from=builder /opt/cartesi/coprocessor-program/target/riscv64gc-unknown-linux-gnu/release/coprocessor-program .
+WORKDIR /opt/cartesi/dapp
+COPY --from=builder /opt/cartesi/dapp/target/riscv64gc-unknown-linux-gnu/release/dapp .
 
 ENV ROLLUP_HTTP_SERVER_URL="http://127.0.0.1:5004"
 
 ENTRYPOINT ["rollup-init"]
-CMD ["coprocessor-program"]
+CMD ["dapp"]

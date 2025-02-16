@@ -6,3 +6,7 @@ beacon-cache
 deployment_history
 out
 cache
+output.car
+output.car.json
+output.cid
+output.size
