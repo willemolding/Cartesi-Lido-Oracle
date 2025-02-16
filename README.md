@@ -5,6 +5,8 @@
 
 A coprocessor that enhances the Lido protocol by replacing trusted parties with provable computation. Built for Cartesi+Eigenlayer Experiment Week 2025.
 
+[Current testnet deployment](https://holesky.etherscan.io/address/0x02b6B745F2AB51614213BB27B3b415ed6368e101)
+
 ## About
 
 To correctly rebase stETH Lido needs to know the total staked ETH held by all Lido validators, among some other things. This information lives in the beacon state which inaccessible to smart contracts. Even if it was the gas required to iterate over all the >1M validators makes it infeasible.
@@ -31,6 +33,9 @@ OracleReport {
 3/4 of these values can be calculated by iterating over the beacon state. Lido validators can be identified by their withdrawal credentials. The `withdrawalVaultBalanceWei` must be calculated from execution state and is outside the scope of this project for now.
 
 This report is received back on-chain via a staked operator and can then be consumed by the Lido protocol via the LIP-23 second opinion oracle interface.
+
+
+![Architecture Diagram](./resources/arch.excalidraw.svg)
 
 ## Running the Demo
 
@@ -89,13 +94,13 @@ Since there is no beacon blocks for the devnet chain this calls the `generateRep
 
 Configure the [.env] file with an RPC for Holesky as well as an API URL and key for verifying the contract. Ensure the private key is funded with Holesky Eth. Obtain the URL of an operator for Holesky (hopefully this will become easier in the future)
 
-Deploy the coprocessor with:
+Publish the coprocessor with:
 
 ```shell
-just deploy-holesky
+just publish-holesky
 ```
 
-Deploy the contracts again so they are verified and can be viewed nicely on etherscan
+Deploy the contracts so they are verified and can be viewed nicely on etherscan
 
 ```shell
 just deploy-contracts-and-verify

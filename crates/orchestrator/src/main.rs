@@ -102,6 +102,7 @@ async fn main() -> Result<()> {
     let provider = ProviderBuilder::new().wallet(wallet).on_http(eth_rpc_url);
     let contract = CartesiLidoOracle::new(contract_address, provider);
 
+    tracing::info!("Initiating report with onchain transaction");
     let tx_hash = contract
         .generateReportUntrusted(
             U256::from(slot),
@@ -219,9 +220,9 @@ async fn upload_to_operator(base_url: Url, inputs: &Inputs) -> Result<()> {
 
         let status = res.status();
         let text = res.text().await?;
-        tracing::debug!("Preimage check response: {:?}", &text);
 
         if status != 200 {
+            tracing::debug!("Preimage check response: {:?}", &text);
             return Err(anyhow::anyhow!("Check showed preimages not uploaded"));
         }
     }
