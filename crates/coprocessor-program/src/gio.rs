@@ -32,8 +32,6 @@ pub async fn get_preimage(hash: [u8; 32]) -> Result<Vec<u8>> {
         .send()
         .await?;
 
-    tracing::debug!("Got response: {:?}", res);
-
     let response: GIOResponse = res.json().await?;
     Ok(hex::decode(response.response.trim_start_matches("0x"))?)
 }

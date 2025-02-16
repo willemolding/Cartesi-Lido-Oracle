@@ -122,7 +122,7 @@ struct Inputs {
 
 impl Inputs {
     fn get_manifest_hash(&self) -> [u8; 32] {
-        self.manifest.block_hash
+        keccak(&self.manifest.to_bytes().unwrap())
     }
 }
 
@@ -130,8 +130,10 @@ fn build_inputs<const CHUNK_SIZE: usize>(
     beacon_block: SignedBeaconBlockHeader,
     beacon_state: BeaconState,
 ) -> Inputs {
-    let block_data = serde_cbor::to_vec(&beacon_block).unwrap();
-    let beacon_state_data = serde_cbor::to_vec(&beacon_state).unwrap();
+    let mut block_data = Vec::new();
+    beacon_block.serialize(&mut block_data).unwrap();
+    let mut beacon_state_data = Vec::new();
+    beacon_state.serialize(&mut beacon_state_data).unwrap();
     let state_chunks: Vec<_> = beacon_state_data
         .chunks(CHUNK_SIZE)
         .map(|c| c.to_vec())
@@ -163,7 +165,7 @@ async fn upload_to_operator(base_url: Url, inputs: &Inputs) -> Result<()> {
     let preimages: Vec<(u8, Vec<u8>, Vec<u8>)> = vec![
         (
             KECCACK_HASH_TYPE,
-            keccak(&inputs.manifest.to_bytes()?).to_vec(),
+            inputs.get_manifest_hash().to_vec(),
             inputs.manifest.to_bytes()?,
         ),
         (

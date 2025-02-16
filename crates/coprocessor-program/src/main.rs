@@ -93,14 +93,20 @@ async fn run_oracle(input: Vec<u8>) -> Result<Report> {
     let input = Input::abi_decode(&input, true)?;
 
     let manifest = Manifest::from_bytes(&get_preimage(*input.manifest_hash).await?)?;
-    let block: SignedBeaconBlockHeader =
-        serde_cbor::from_slice(&get_preimage(*input.block_root).await?)?;
+
+    tracing::debug!("Manifest: {:?}", manifest);
+
+    let block = SignedBeaconBlockHeader::deserialize(&get_preimage(manifest.block_hash).await?)?;
+
+    tracing::debug!("Successfully loaded beacon block: {:?}", block);
 
     let mut state_bytes = Vec::new();
     for chunk_hash in manifest.state_chunk_hashes {
         state_bytes.extend_from_slice(&get_preimage(chunk_hash).await?);
     }
-    let state: BeaconState = serde_cbor::from_slice(&state_bytes)?;
+    let state = BeaconState::deserialize(&state_bytes)?;
+
+    tracing::debug!("Successfully loaded beacon state");
 
     // calculate the block root and ensure it matches the input
     let block_root = block.hash_tree_root()?;

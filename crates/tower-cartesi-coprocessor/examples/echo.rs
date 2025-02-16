@@ -5,7 +5,7 @@ use std::future::Future;
 use std::pin::Pin;
 use std::task::{Context, Poll};
 
-use tower_cartesi::{listen_http, Request, Response};
+use tower_cartesi_coprocessor::{listen_http, Request, Response};
 use tower_service::Service;
 
 type BoxError = Box<dyn Error + Send + Sync>;
@@ -44,6 +44,6 @@ impl Service<Request> for EchoApp {
                 println!("Received inspect state request {:?}", payload);
             }
         }
-        async { Ok(tower_cartesi::Response::empty_accept()) }.boxed()
+        async { Ok(tower_cartesi_coprocessor::Response::empty_accept()) }.boxed()
     }
 }
