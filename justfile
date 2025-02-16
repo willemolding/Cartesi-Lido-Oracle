@@ -66,6 +66,19 @@ deploy-contracts:
     forge create --broadcast \
       --rpc-url $ETH_RPC_URL \
       --private-key $ETH_PRIVATE_KEY \
+      ./src/CartesiLidoOracle.sol:CartesiLidoOracle \
+      --constructor-args $DEVNET_TASK_ISSUER $MACHINE_HASH
+
+deploy-contracts-and-verify:
+    #!/usr/bin/env bash
+    output=$(cartesi-coprocessor address-book)
+    MACHINE_HASH=$(echo "$output" | grep "Machine Hash" | awk '{print $3}')
+    DEVNET_TASK_ISSUER=$(echo "$output" | grep "Devnet_task_issuer" | awk '{print $2}')
+
+    cd contracts
+    forge create --broadcast \
+      --rpc-url $ETH_RPC_URL \
+      --private-key $ETH_PRIVATE_KEY \
       --verify \
       --etherscan-api-key $ETHERSCAN_API_KEY \
       --verifier-url $ETHERSCAN_API_URL \

@@ -10,6 +10,8 @@ Lido currently gets around this by having trusted offchain actors compute this v
 
 This project gives an alternative solution using Cartesi Coprocessors and Eigenlayer. It solves a real and current problem faced by the largest DeFi protocol in the world. After this hackathon I hope it will be considered as a candidate for a further Lido grant.
 
+
+
 ## How it works
 
 With [EIP-4788](https://eips.ethereum.org/EIPS/eip-4788) a trusted beacon block root can be obtained in the Ethereum execution layer. This is used as the input to the coprocessor along with another hash used to bootstrap preimage data retrieval.
@@ -81,6 +83,28 @@ This will:
 > It will take quite a while for the coprocessor to complete the request as the beacon state can be pretty large (>100MB)
 
 Since there is no beacon blocks for the devnet chain this calls the `generateReportUntrusted` function which skips obtaining a trusted beacon root in the contract via EIP-4788. !This is for testing only!
+
+## Holesky Testnet
+
+Configure the [.env] file with an RPC for Holesky as well as an API URL and key for verifying the contract. Ensure the private key is funded with Holesky Eth. Obtain the URL of an operator for Holesky (hopefully this will become easier in the future)
+
+Deploy the coprocessor with:
+
+```shell
+just deploy-holesky
+```
+
+Deploy the contracts again so they are verified and can be viewed nicely on etherscan
+
+```shell
+just deploy-contracts-and-verify
+```
+
+Trigger an oracle report with
+
+```shell
+just trigger-oracle 3647904
+```
 
 ## Challenges Faced
 
